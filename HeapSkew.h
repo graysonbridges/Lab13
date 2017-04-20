@@ -53,42 +53,71 @@ bool HeapSkew<T>::heapIsEmpty()
 template < class T >
 BinaryTree<T>* HeapSkew<T>::merge(BinaryTree<T>* left, BinaryTree<T>* right)
 {
-  //DO THIS
+        //DO THIS
 
+        if(left->isEmpty())
+        {
+                delete left;
+                return right;
+        }
+        if(right->isEmpty())
+        {
+                delete right;
+                return left;
+        }
 
+        BinaryTree<T>* result;
 
+        int comp = (*compare_items)(left->getRootItem(), right->getRootItem());
+        if(comp < 0 )
+        {
+                result =  merge(right, left);//should this be assigned to something
+        }
 
+        BinaryTree<T>* LL = result->detachLeftSubtree();
+        BinaryTree<T>* LR = result->detachRightSubtree();
 
+        result->attachRightSubtree(LL);
 
-
-
-
-
-
-
-
-
+        if(LR->isEmpty())
+        {
+                //bt = merge(LR, right);
+                //left->attachLeftSubtree(right);
+                //right->attachRightSubtree(LL);
+                result->attachLeftSubtree(right);
+                //  bt->attachRightSubtree(LL);
+                //left = merge(right, LL);
+                return result;
+        }
+        else
+        {
+                result = merge(LR, right);
+                left->attachLeftSubtree(result);
+                return left;
+        }
 }
 
 template < class T >
 void HeapSkew<T>::heapInsert(T* item)
 {
-   //DO THIS (calls merge, should be short)
-
-
-
-
+        //DO THIS (calls merge, should be short)
+        BinaryTree<T>* right = new BinaryTree<T>(item);
+        BinaryTree<T>* left = bt;
+        bt = merge(left, right);
+        sze++;
 }
 
 template < class T >
 T* HeapSkew<T>::heapRemove()
 {
-   //DO THIS (calls merge, should be short)
-
-
-
-
-
+        //DO THIS (calls merge, should be short)
+        T* root = bt->getRootItem();
+        BinaryTree<T>* left = bt->detachLeftSubtree();
+        BinaryTree<T>* right = bt->detachRightSubtree();
+        //delete bt;
+        bt = merge(left, right);
+        sze--;
+        return root;
 
 }
 
